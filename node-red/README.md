@@ -9,7 +9,7 @@ Because the base docker image, `nodered/node-red:latest`, it include the followi
 
 To build the docker image:
 
-   `docker build -t mcblitz/node-red:latest .'
+   `docker build -t mcblitz/node-red:latest .`
 
 The push to dockerhub
 
