@@ -16,6 +16,10 @@ To install the app:
 
    `/dev/disk/by-label/home-automation  /home-automation   ext4    defaults,noatime 0 2`
 
-5. Run installation script
+5. Label node to run the app on
+
+   `kubectl label node k8s-node-1 home-automation=mounted`
+
+6. Run installation script
 
    `./install`
