@@ -1,0 +1,13 @@
+image:
+  repository: mcblitz/node-red
+  tag: latest
+ingress:
+  enabled: true
+  hosts:
+    - node-red
+persistence:
+  enabled: true
+  size: 5Gi
+  existingClaim: node-red-pv-claim
+  subPath: node-red
+
