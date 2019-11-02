@@ -22,4 +22,4 @@ To install the app:
 
 6. Run installation script
 
-   `./install`
+   `./install <USERNAME> <PASSWORD>`
