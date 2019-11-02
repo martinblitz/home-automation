@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-server-alpine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: nfs-server
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        role: nfs-server
+    spec:
+      containers:
+      - env:
+        - name: SHARED_DIRECTORY
+          value: /exports
+        image: itsthenetwork/nfs-server-alpine:latest-arm
+        name: nfs
+        resources: {}
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /exports
+          name: nfs-server-alpine-pv-claim
+        ports:
+          - containerPort: 2049
+            protocol: TCP
+          - containerPort: 20048
+            protocol: TCP
+          - containerPort: 111
+            protocol: TCP
+          - containerPort: 2049
+            protocol: UDP
+          - containerPort: 20048
+            protocol: UDP
+          - containerPort: 111
+            protocol: UDP
+      restartPolicy: Always
+      volumes:
+      - name: nfs-server-alpine-pv-claim
+        persistentVolumeClaim:
+          claimName: nfs-server-alpine-pv-claim
