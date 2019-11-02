@@ -27,6 +27,6 @@ To install this app:
 
 8. Install the app
 
-   `.install.sh`
+   `.install.sh <USERNAME> <PASSWORD>`
 
    
