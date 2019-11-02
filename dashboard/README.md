@@ -16,7 +16,9 @@ To get the login token
 
 To access the dashboard, run the command
 
-    `kubectl proxy`
+   `kubectl proxy`
 
-then access the following URL: `http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#!/login`
+then access the following URL:
+
+   `http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#!/login`
 
