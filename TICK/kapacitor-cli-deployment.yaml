@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kapacitor-cli
+  name: kapacitor-cli
+  namespace: tick
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kapacitor-cli
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: kapacitor-cli
+    spec:
+      containers:
+      - command:
+        - bash
+        env:
+        - name: KAPACITOR_URL
+          value: http://kapacitor:9092
+        image: kapacitor
+        name: kapacitor-cli
+        resources: {}
+      restartPolicy: Always

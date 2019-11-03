@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: chronograf
+  namespace: tick
+spec:
+  rules:
+  - host: chronograf
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: chronograf
+          servicePort: 8888

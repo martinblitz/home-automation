@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: influxdb-cli
+  name: influxdb-cli
+  namespace: tick
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: influxdb-cli
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: influxdb-cli
+    spec:
+      containers:
+      - command:
+        - influx
+        - -host
+        - influxdb
+        image: influxdb
+        name: influxdb-cli
+        resources: {}
+      restartPolicy: Always

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: telegraf
+  name: telegraf
+  namespace: tick
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telegraf
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: telegraf
+    spec:
+      containers:
+      - image: telegraf
+        name: telegraf
+        ports:
+        - containerPort: 8092
+          protocol: UDP
+        - containerPort: 8094
+        - containerPort: 8125
+          protocol: UDP
+        resources: {}
+        volumeMounts:
+        - mountPath: /etc/telegraf
+          name: telegraf-claim
+          readOnly: true
+      restartPolicy: Always
+      volumes:
+      - name: telegraf-claim
+        persistentVolumeClaim:
+          claimName: telegraf-pv-claim
+          readOnly: true

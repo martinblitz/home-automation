@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kapacitor
+  name: kapacitor
+  namespace: tick
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kapacitor
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: kapacitor
+    spec:
+      containers:
+      - env:
+        - name: KAPACITOR_HOSTNAME
+          value: kapacitor
+        - name: KAPACITOR_INFLUXDB_0_URLS_0
+          value: http://influxdb:8086
+        image: kapacitor
+        name: kapacitor
+        ports:
+        - containerPort: 9092
+        resources: {}
+      restartPolicy: Always

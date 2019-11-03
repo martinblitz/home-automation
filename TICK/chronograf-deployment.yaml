@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: chronograf
+  name: chronograf
+  namespace: tick
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chronograf
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: chronograf
+    spec:
+      containers:
+      - image: chronograf
+        name: chronograf
+        ports:
+        - containerPort: 8888
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/chronograf
+          name: chronograf-claim
+        env:
+        - name: INFLUXDB_URL
+          value: http://influxdb:8086
+        - name: KAPACITOR_URL
+          value: http://kapacitor:9092
+      restartPolicy: Always
+      volumes:
+      - name: chronograf-claim
+        persistentVolumeClaim:
+          claimName: chronograf-pv-claim
