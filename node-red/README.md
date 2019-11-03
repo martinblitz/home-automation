@@ -19,6 +19,8 @@ To install:
 
    `./install`
 
+   Note: make sure the server in `node-red-pv-volume.yaml` matches the address of the `nfs-server` service.
+
 To uninstall:
 
    `./uninstall`

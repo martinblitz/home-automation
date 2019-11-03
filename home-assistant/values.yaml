@@ -1,0 +1,19 @@
+hostNetwork: true
+homeKitPorts: true
+ingress:
+  enabled: true
+  hosts:
+    - home-assistant
+persistence:
+  enabled: true
+  size: 5Gi
+  existingClaim: home-assistant-pv-claim
+  storageClass: manual
+configurator:
+  enabled: true
+  image:
+    tag: arm
+  ingress:
+    enabled: true
+    hosts:
+      - hass-configurator
