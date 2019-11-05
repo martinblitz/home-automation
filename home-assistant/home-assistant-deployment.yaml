@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: home-assistant
+  name: home-assistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: home-assistant
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+    spec:
+      containers:
+      - env:
+        - name: value
+          value: Europe/London
+        - name: variable
+          value: TZ
+        image: homeassistant/home-assistant:stable
+        name: home-assistant
+        ports:
+          - name: api
+            hostPort: 8123
+            containerPort: 8123
+            protocol: TCP
+          - name: gem
+            hostPort: 8000
+            containerPort: 8000
+        resources: {}
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /config
+          name: home-assistant-config-pv-claim
+        - mountPath: /dev/bus/usb
+          name: home-assistant-usb-pv-claim
+        - mountPath: /var/run/dbus
+          name: home-assistant-dbus-pv-claim
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsUser: 0
+      - name: configurator
+        image: 'causticlab/hass-configurator-docker:arm'
+        ports:
+          - name: configurator
+            hostPort: 3218
+            containerPort: 3218
+            protocol: TCP
+        env:
+          - name: HC_HASS_API
+            value: 'http://127.0.0.1:8123/api/'
+          - name: HC_BASEPATH
+            value: /config
+          - name: HC_ENFORCE_BASEPATH
+            value: 'true'
+        resources: {}
+        volumeMounts:
+          - name: home-assistant-config-pv-claim
+            mountPath: /config
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsUser: 0
+      restartPolicy: Always
+      volumes:
+      - name: home-assistant-config-pv-claim
+        persistentVolumeClaim:
+          claimName: home-assistant-config-pv-claim
+      - name: home-assistant-usb-pv-claim
+        persistentVolumeClaim:
+          claimName: home-assistant-usb-pv-claim
+      - name: home-assistant-dbus-pv-claim
+        persistentVolumeClaim:
+          claimName: home-assistant-dbus-pv-claim
+status: {}

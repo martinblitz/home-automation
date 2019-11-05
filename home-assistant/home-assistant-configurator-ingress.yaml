@@ -1,0 +1,15 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  labels:
+    app: home-assistant
+  name: home-assistant-configurator
+spec:
+  rules:
+    - host: hass-configurator
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: home-assistant
+              servicePort: 3218

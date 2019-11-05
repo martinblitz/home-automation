@@ -1,0 +1,15 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  labels:
+    app: home-assistant
+  name: home-assistant
+spec:
+  rules:
+    - host: home-assistant
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: home-assistant
+              servicePort: 8123
