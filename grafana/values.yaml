@@ -1,0 +1,12 @@
+image:
+  repository: grafana/grafana
+  tag: 6.3.6
+ingress:
+  enabled: true
+  hosts:
+    - grafana
+persistence:
+  enabled: true
+  existingClaim: grafana-pv-claim
+  subPath: grafana
+
