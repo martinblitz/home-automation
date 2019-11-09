@@ -16,6 +16,7 @@ spec:
       labels:
         app: home-assistant
     spec:
+      hostNetwork: true
       containers:
       - env:
         - name: value
@@ -26,7 +27,6 @@ spec:
         name: home-assistant
         ports:
           - name: api
-            hostPort: 8123
             containerPort: 8123
             protocol: TCP
           - name: gem
@@ -38,10 +38,6 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: home-assistant-config-pv-claim
-        - mountPath: /dev/bus/usb
-          name: home-assistant-usb-pv-claim
-        - mountPath: /var/run/dbus
-          name: home-assistant-dbus-pv-claim
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsUser: 0
@@ -71,10 +67,3 @@ spec:
       - name: home-assistant-config-pv-claim
         persistentVolumeClaim:
           claimName: home-assistant-config-pv-claim
-      - name: home-assistant-usb-pv-claim
-        persistentVolumeClaim:
-          claimName: home-assistant-usb-pv-claim
-      - name: home-assistant-dbus-pv-claim
-        persistentVolumeClaim:
-          claimName: home-assistant-dbus-pv-claim
-status: {}

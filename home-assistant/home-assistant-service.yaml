@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: home-assistant
+  name: home-assistant-tcp
   annotations:
     metallb.universe.tf/address-pool: default
 spec:
@@ -9,13 +9,17 @@ spec:
   - name: home-assistant-80
     port: 80
     targetPort: 8123
+    protocol: TCP
   - name: home-assistant-8123
     port: 8123
     targetPort: 8123
+    protocol: TCP
   - name: configurator
     port: 3218
     targetPort: 3218
+    protocol: TCP
   selector:
     app: home-assistant
   type: LoadBalancer
   loadBalancerIP: 192.168.1.248
+
