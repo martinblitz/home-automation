@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: node-red
+  name: node-red
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-red
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: node-red
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - image: mcblitz/node-red
+        name: node-red-homekit
+        resources: {}
+        volumeMounts:
+        - mountPath: /data
+          name: node-red-pv-claim
+        ports:
+          - name: node-red
+            containerPort: 1880
+            protocol: TCP
+      restartPolicy: Always
+      volumes:
+      - name: node-red-pv-claim
+        persistentVolumeClaim:
+          claimName: node-red-pv-claim

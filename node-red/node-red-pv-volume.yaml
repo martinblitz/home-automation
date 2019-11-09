@@ -16,5 +16,5 @@ spec:
     - hard
     - nfsvers=4.1
   nfs:
-    path: /
+    path: /node-red
     server: 10.99.67.176
