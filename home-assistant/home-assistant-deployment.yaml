@@ -39,6 +39,8 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: home-assistant-config-pv-claim
+        - mountPath: /ssl
+          name: home-assistant-ssl-pv-claim
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsUser: 0
@@ -68,3 +70,7 @@ spec:
       - name: home-assistant-config-pv-claim
         persistentVolumeClaim:
           claimName: home-assistant-config-pv-claim
+      - name: home-assistant-ssl-pv-claim
+        persistentVolumeClaim:
+          claimName: home-assistant-ssl-pv-claim
+

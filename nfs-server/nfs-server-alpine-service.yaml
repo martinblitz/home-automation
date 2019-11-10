@@ -1,20 +1,14 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: nfs-server
+  name: nfs-server-tcp
+  annotations:
+    metallb.universe.tf/address-pool: default
+    metallb.universe.tf/allow-shared-ip: nfs
 spec:
   selector:
     role: nfs-server
   ports:
-    - name: nfs
-      port: 2049
-      protocol: UDP
-    - name: mountd
-      port: 20048
-      protocol: UDP   
-    - name: rpcbind
-      port: 111
-      protocol: UDP
     - name: nfs-tcp
       port: 2049
       protocol: TCP
@@ -24,3 +18,28 @@ spec:
     - name: rpcbind-tcp
       port: 111
       protocol: TCP
+  type: LoadBalancer
+  loadBalancerIP: 192.168.1.250
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nfs-server-udp
+  annotations:
+    metallb.universe.tf/address-pool: default
+    metallb.universe.tf/allow-shared-ip: nfs
+spec:
+  selector:
+    role: nfs-server
+  ports:
+    - name: nfs
+      port: 2049
+      protocol: UDP
+    - name: mountd
+      port: 20048
+      protocol: UDP
+    - name: rpcbind
+      port: 111
+      protocol: UDP
+  type: LoadBalancer
+  loadBalancerIP: 192.168.1.250

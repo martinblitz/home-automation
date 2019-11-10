@@ -17,4 +17,5 @@ spec:
     - nfsvers=4.1
   nfs:
     path: /grafana
-    server: 10.99.67.176
+    #server: 10.99.67.176
+    server: nfs-server

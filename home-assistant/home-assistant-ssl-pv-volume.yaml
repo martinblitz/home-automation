@@ -1,21 +1,20 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: telegraf-pv-volume
-  namespace: tick
+  name: home-assistant-ssl-pv-volume
   labels:
     type: local
-    io.kompose.service: telegraf-pv-claim
 spec:
-  storageClassName: manual
   capacity:
-    storage: 10Gi
+    storage: 1Mi
+  volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
   mountOptions:
     - hard
     - nfsvers=4.1
   nfs:
-    path: /telegraf
+    path: /letsencrypt/etc/letsencrypt/live/blitzhome.dynamic-dns.net
     server: nfs-server

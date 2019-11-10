@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: letsencrypt
+  name: letsencrypt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: letsencrypt
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: letsencrypt
+    spec:
+      containers:
+      - env:
+        - name: EMAIL
+          value: mcblitz@verizon.net
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        - name: TZ
+          value: America/New_York
+        - name: URL
+          value: blitzhome.dynamic-dns.net
+        - name: VALIDATION
+          value: http
+        image: linuxserver/letsencrypt
+        name: lets-encrypt
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /config
+          name: letsencrypt-pv-claim
+      restartPolicy: Always
+      volumes:
+      - name: letsencrypt-pv-claim
+        persistentVolumeClaim:
+          claimName: letsencrypt-pv-claim

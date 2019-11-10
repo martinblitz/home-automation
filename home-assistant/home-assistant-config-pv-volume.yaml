@@ -17,4 +17,4 @@ spec:
     - nfsvers=4.1
   nfs:
     path: /home-assistant
-    server: 10.99.67.176
+    server: nfs-server

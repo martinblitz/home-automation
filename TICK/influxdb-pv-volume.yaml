@@ -13,5 +13,9 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  hostPath:
-    path: "/home-automation/influxdb"
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /influxdb
+    server: nfs-server
