@@ -24,7 +24,7 @@ spec:
           value: Europe/London
         - name: variable
           value: TZ
-        image: homeassistant/home-assistant:stable
+        image: mcblitz/home-assistant:latest
         name: home-assistant
         ports:
           - name: api
@@ -39,7 +39,7 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: home-assistant-config-pv-claim
-        - mountPath: /ssl
+        - mountPath: /config/letsencrypt
           name: home-assistant-ssl-pv-claim
         imagePullPolicy: IfNotPresent
         securityContext:
@@ -62,6 +62,8 @@ spec:
         volumeMounts:
           - name: home-assistant-config-pv-claim
             mountPath: /config
+          - mountPath: /config/letsencrypt
+            name: home-assistant-ssl-pv-claim
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsUser: 0

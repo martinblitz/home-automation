@@ -7,7 +7,11 @@ metadata:
     metallb.universe.tf/allow-shared-ip: home-assistant
 spec:
   ports:
-  - name: home-assistant
+  - name: home-assistant-443
+    port: 443
+    targetPort: 8123
+    protocol: TCP
+  - name: home-assistant-8123
     port: 8123
     targetPort: 8123
     protocol: TCP

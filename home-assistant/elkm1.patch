@@ -1,0 +1,75 @@
+diff --git a/homeassistant/components/elkm1/__init__.py b/homeassistant/components/elkm1/__init__.py
+index d257c4683..0ed7cc43b 100644
+--- a/homeassistant/components/elkm1/__init__.py
++++ b/homeassistant/components/elkm1/__init__.py
+@@ -13,6 +13,7 @@ from homeassistant.const import (
+     CONF_PASSWORD,
+     CONF_TEMPERATURE_UNIT,
+     CONF_USERNAME,
++    CONF_CODE,
+ )
+ from homeassistant.core import HomeAssistant, callback  # noqa
+ from homeassistant.helpers import config_validation as cv, discovery
+@@ -105,6 +106,7 @@ DEVICE_SCHEMA = vol.Schema(
+         vol.Optional(CONF_PREFIX, default=""): vol.All(cv.string, vol.Lower),
+         vol.Optional(CONF_USERNAME, default=""): cv.string,
+         vol.Optional(CONF_PASSWORD, default=""): cv.string,
++        vol.Optional(CONF_CODE, default=""): cv.string,
+         vol.Optional(CONF_TEMPERATURE_UNIT, default="F"): cv.temperature_unit,
+         vol.Optional(CONF_AREA, default={}): DEVICE_SCHEMA_SUBDOMAIN,
+         vol.Optional(CONF_COUNTER, default={}): DEVICE_SCHEMA_SUBDOMAIN,
+@@ -153,6 +155,7 @@ async def async_setup(hass: HomeAssistant, hass_config: ConfigType) -> bool:
+ 
+         config = {"temperature_unit": conf[CONF_TEMPERATURE_UNIT]}
+         config["panel"] = {"enabled": True, "included": [True]}
++        config["code"] = conf[CONF_CODE]
+ 
+         for item, max_ in configs.items():
+             config[item] = {
+@@ -240,6 +243,7 @@ class ElkEntity(Entity):
+         self._element = element
+         self._prefix = elk_data["prefix"]
+         self._temperature_unit = elk_data["config"]["temperature_unit"]
++        self._code = elk_data["config"]["code"]
+         # unique_id starts with elkm1_ iff there is no prefix
+         # it starts with elkm1m_{prefix} iff there is a prefix
+         # this is to avoid a conflict between
+diff --git a/homeassistant/components/elkm1/alarm_control_panel.py b/homeassistant/components/elkm1/alarm_control_panel.py
+index 38519ab5b..2884dc002 100644
+--- a/homeassistant/components/elkm1/alarm_control_panel.py
++++ b/homeassistant/components/elkm1/alarm_control_panel.py
+@@ -158,6 +158,8 @@ class ElkArea(ElkEntity, alarm.AlarmControlPanel):
+         if elmt.alarm_state is not None:
+             attrs["alarm_state"] = AlarmState(elmt.alarm_state).name.lower()
+         attrs["changed_by_entity_id"] = self._changed_by_entity_id
++        if self._code != "":
++            attrs["code_arm_required"] = False
+         return attrs
+ 
+     def _element_changed(self, element, changeset):
+@@ -194,17 +196,25 @@ class ElkArea(ElkEntity, alarm.AlarmControlPanel):
+ 
+     async def async_alarm_arm_home(self, code=None):
+         """Send arm home command."""
++        if code is None:
++            code = self._code
+         self._element.arm(ArmLevel.ARMED_STAY.value, int(code))
+ 
+     async def async_alarm_arm_away(self, code=None):
+         """Send arm away command."""
++        if code is None:
++            code = self._code
+         self._element.arm(ArmLevel.ARMED_AWAY.value, int(code))
+ 
+     async def async_alarm_arm_night(self, code=None):
+         """Send arm night command."""
++        if code is None:
++            code = self._code
+         self._element.arm(ArmLevel.ARMED_NIGHT.value, int(code))
+ 
+     async def _arm_service(self, arm_level, code):
++        if code is None:
++            code = self._code
+         self._element.arm(arm_level, code)
+ 
+     async def _display_message(self, clear, beep, timeout, line1, line2):
