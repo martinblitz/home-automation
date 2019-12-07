@@ -1,6 +1,7 @@
 image:
   repository: grafana/grafana
   tag: 6.3.6
+plugins: [ grafana-piechart-panel ]
 ingress:
   enabled: true
   hosts:
@@ -9,4 +10,9 @@ persistence:
   enabled: true
   existingClaim: grafana-pv-claim
   subPath: grafana
+grafana.ini:
+  auth.basic:
+    enabled: true
+  auth.anonymous:
+    enabled: true
 
