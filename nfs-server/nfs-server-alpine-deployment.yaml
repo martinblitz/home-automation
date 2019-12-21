@@ -18,6 +18,8 @@ spec:
       - env:
         - name: SHARED_DIRECTORY
           value: /exports
+        - name: SHARED_DIRECTORY_2
+          value: /exports/backup
         image: itsthenetwork/nfs-server-alpine:latest-arm
         name: nfs
         resources: {}
@@ -26,6 +28,8 @@ spec:
         volumeMounts:
         - mountPath: /exports
           name: nfs-server-alpine-pv-claim
+        - mountPath: /exports/backup
+          name: nfs-server-alpine-backup-pv-claim
         ports:
           - containerPort: 2049
             protocol: TCP
@@ -44,3 +48,7 @@ spec:
       - name: nfs-server-alpine-pv-claim
         persistentVolumeClaim:
           claimName: nfs-server-alpine-pv-claim
+      - name: nfs-server-alpine-backup-pv-claim
+        persistentVolumeClaim:
+          claimName: nfs-server-alpine-backup-pv-claim
+
