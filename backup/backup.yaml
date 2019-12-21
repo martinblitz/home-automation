@@ -1,0 +1,132 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: backup-home-automation-pv-volume
+spec:
+  capacity:
+    storage: 3Ti
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /
+    server: nfs-server
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backup-home-automation-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Ti
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: backup-pv-volume
+spec:
+  capacity:
+    storage: 1Ti
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /backup
+    server: nfs-server
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backup-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Ti
+
+---
+
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: daily-backup
+spec:
+  schedule: "30 0 * * *"
+  jobTemplate:
+      spec:
+        template:
+          spec:
+            containers:
+            - name: daily-backup
+              image: refitngin/rsync-alpine:3.10.2_arm32v6
+              command: ["rsync"]
+              args: ["-a", "--verbose", "--recursive", "--delete", "--links", "--exclude", "home-automation/backup", "--delete-excluded", "/home-automation", "/backup/rsync/daily"]
+              volumeMounts:
+              - mountPath: /home-automation
+                name: home-automation
+              - mountPath: /backup
+                name: backup
+            restartPolicy: OnFailure
+            hostNetwork: true
+            volumes:
+            - name: home-automation
+              persistentVolumeClaim:
+                claimName: backup-home-automation-pv-claim
+            - name: backup
+              persistentVolumeClaim:
+                claimName: backup-pv-claim
+
+---
+
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: weekly-backup
+spec:
+  schedule: "00 2 * * 3"
+  jobTemplate:
+      spec:
+        template:
+          spec:
+            containers:
+            - name: weekly-backup
+              image: refitngin/rsync-alpine:3.10.2_arm32v6
+              command: ["rsync"]
+              args: ["-a", "--verbose", "--recursive", "--delete", "--links", "/backup/rsync/daily", "/backup/rsync/weekly"]
+              volumeMounts:
+              - mountPath: /home-automation
+                name: home-automation
+              - mountPath: /backup
+                name: backup
+            restartPolicy: OnFailure
+            hostNetwork: true
+            volumes:
+            - name: home-automation
+              persistentVolumeClaim:
+                claimName: backup-home-automation-pv-claim
+            - name: backup
+              persistentVolumeClaim:
+                claimName: backup-pv-claim
+
