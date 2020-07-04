@@ -2,24 +2,37 @@
 
 set -e
 
-AFP_LOGIN=`cat /etc/timemachine/secrets/username`
-AFP_PASSWORD=`cat /etc/timemachine/secrets/password`
-AFP_NAME=`cat /etc/timemachine/secrets/vol_name`
-if [ -e /etc/timemachine/secrets/vol_root ]; then
-    AFP_ROOT=`cat /etc/timemachine/secrets/vol_root`
+USER=`cat /etc/timemachine/secrets/username`
+PASSWORD=`cat /etc/timemachine/secrets/password`
+if [ -e /etc/timehome/secrets/vol_name ] ; then
+    VOLUME_NAME=`cat /etc/timemachine/secrets/vol_root`
 else
-    AFP_ROOT=/timemachine
-fi
-if [ -e /etc/timemachine/secrets/size_limit ]; then
-    AFP_SIZE_LIMIT=`cat /etc/timemachine/secrets/size_limit`
+    VOLUME_NAME=/timemachine
 fi
 if [ -e /etc/timemachine/secrets/uid ]; then
-    OPTION_PUID="-i `cat /etc/timemachine/secrets/uid`"
+    UID="--uid `cat /etc/timemachine/secrets/uid`"
 fi
 if [ -e /etc/timemachine/secrets/gid ]; then
-    OPTION_PGID="-g `cat /etc/timemachine/secrets/gid`"
+    GID="--gid `cat /etc/timemachine/secrets/gid`"
 fi
 
-add-account $PUID $PGID "$AFP_LOGIN" "$AFP_PASSWORD" "$AFP_NAME" "$AFP_ROOT" $AFP_SIZE_LIMIT
+addusr $UID $GID $USER
+mkdir $VOLUME_NAME/backups
+chown -R $USER $VOLUME_NAME
 
-exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+cat <<'EOF' >> /etc/samba/smb.conf
+[backups]
+    comment = Backups
+    path = $VOLUME_NAME/backups
+    valid users = mudge
+    read only = no
+    vfs objects = catia fruit streams_xattr
+    fruit:time machine = yes
+EOF
+
+smbpass -a $USER 
+
+testparm -s
+
+service smbd reload
+
