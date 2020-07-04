@@ -1,4 +1,4 @@
-FROM homeassistant/home-assistant:stable
+FROM homeassistant/home-assistant:0.111.4
 LABEL mainteiner="Martin Blitz <martincblitz@gmail.com>"
 
 USER root

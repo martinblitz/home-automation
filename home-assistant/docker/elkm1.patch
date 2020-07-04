@@ -1,32 +1,32 @@
 diff --git a/homeassistant/components/elkm1/__init__.py b/homeassistant/components/elkm1/__init__.py
-index d257c4683..0ed7cc43b 100644
+index 946e40b7e2..3be2263bcd 100644
 --- a/homeassistant/components/elkm1/__init__.py
 +++ b/homeassistant/components/elkm1/__init__.py
-@@ -13,6 +13,7 @@ from homeassistant.const import (
+@@ -15,6 +15,7 @@ from homeassistant.const import (
      CONF_PASSWORD,
      CONF_TEMPERATURE_UNIT,
      CONF_USERNAME,
 +    CONF_CODE,
+     TEMP_CELSIUS,
+     TEMP_FAHRENHEIT,
  )
- from homeassistant.core import HomeAssistant, callback  # noqa
- from homeassistant.helpers import config_validation as cv, discovery
-@@ -105,6 +106,7 @@ DEVICE_SCHEMA = vol.Schema(
+@@ -122,6 +123,7 @@ DEVICE_SCHEMA = vol.Schema(
          vol.Optional(CONF_PREFIX, default=""): vol.All(cv.string, vol.Lower),
          vol.Optional(CONF_USERNAME, default=""): cv.string,
          vol.Optional(CONF_PASSWORD, default=""): cv.string,
 +        vol.Optional(CONF_CODE, default=""): cv.string,
-         vol.Optional(CONF_TEMPERATURE_UNIT, default="F"): cv.temperature_unit,
-         vol.Optional(CONF_AREA, default={}): DEVICE_SCHEMA_SUBDOMAIN,
-         vol.Optional(CONF_COUNTER, default={}): DEVICE_SCHEMA_SUBDOMAIN,
-@@ -153,6 +155,7 @@ async def async_setup(hass: HomeAssistant, hass_config: ConfigType) -> bool:
- 
-         config = {"temperature_unit": conf[CONF_TEMPERATURE_UNIT]}
+         vol.Optional(CONF_AUTO_CONFIGURE, default=False): cv.boolean,
+         # cv.temperature_unit will mutate 'C' -> '°C' and 'F' -> '°F'
+         vol.Optional(
+@@ -203,6 +205,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+     if not conf[CONF_AUTO_CONFIGURE]:
+         # With elkm1-lib==0.7.16 and later auto configure is available
          config["panel"] = {"enabled": True, "included": [True]}
 +        config["code"] = conf[CONF_CODE]
- 
-         for item, max_ in configs.items():
+         for item, max_ in ELK_ELEMENTS.items():
              config[item] = {
-@@ -240,6 +243,7 @@ class ElkEntity(Entity):
+                 "enabled": conf[item][CONF_ENABLED],
+@@ -355,6 +358,7 @@ class ElkEntity(Entity):
          self._element = element
          self._prefix = elk_data["prefix"]
          self._temperature_unit = elk_data["config"]["temperature_unit"]
@@ -35,19 +35,19 @@ index d257c4683..0ed7cc43b 100644
          # it starts with elkm1m_{prefix} iff there is a prefix
          # this is to avoid a conflict between
 diff --git a/homeassistant/components/elkm1/alarm_control_panel.py b/homeassistant/components/elkm1/alarm_control_panel.py
-index 38519ab5b..2884dc002 100644
+index 1c299e6880..e1809aaad1 100644
 --- a/homeassistant/components/elkm1/alarm_control_panel.py
 +++ b/homeassistant/components/elkm1/alarm_control_panel.py
-@@ -158,6 +158,8 @@ class ElkArea(ElkEntity, alarm.AlarmControlPanel):
-         if elmt.alarm_state is not None:
-             attrs["alarm_state"] = AlarmState(elmt.alarm_state).name.lower()
-         attrs["changed_by_entity_id"] = self._changed_by_entity_id
+@@ -201,6 +201,8 @@ class ElkArea(ElkAttachedEntity, AlarmControlPanelEntity, RestoreEntity):
+         attrs[ATTR_CHANGED_BY_KEYPAD] = self._changed_by_keypad
+         attrs[ATTR_CHANGED_BY_TIME] = self._changed_by_time
+         attrs[ATTR_CHANGED_BY_ID] = self._changed_by_id
 +        if self._code != "":
 +            attrs["code_arm_required"] = False
          return attrs
  
-     def _element_changed(self, element, changeset):
-@@ -194,17 +196,25 @@ class ElkArea(ElkEntity, alarm.AlarmControlPanel):
+     @property
+@@ -242,26 +244,38 @@ class ElkArea(ElkAttachedEntity, AlarmControlPanelEntity, RestoreEntity):
  
      async def async_alarm_arm_home(self, code=None):
          """Send arm home command."""
@@ -67,9 +67,22 @@ index 38519ab5b..2884dc002 100644
 +            code = self._code
          self._element.arm(ArmLevel.ARMED_NIGHT.value, int(code))
  
-     async def _arm_service(self, arm_level, code):
+     async def async_alarm_arm_home_instant(self, code=None):
+         """Send arm stay instant command."""
 +        if code is None:
 +            code = self._code
-         self._element.arm(arm_level, code)
+         self._element.arm(ArmLevel.ARMED_STAY_INSTANT.value, int(code))
  
-     async def _display_message(self, clear, beep, timeout, line1, line2):
+     async def async_alarm_arm_night_instant(self, code=None):
+         """Send arm night instant command."""
++        if code is None:
++            code = self._code
+         self._element.arm(ArmLevel.ARMED_NIGHT_INSTANT.value, int(code))
+ 
+     async def async_alarm_arm_vacation(self, code=None):
+         """Send arm vacation command."""
++        if code is None:
++            code = self._code
+         self._element.arm(ArmLevel.ARMED_VACATION.value, int(code))
+ 
+     async def async_display_message(self, clear, beep, timeout, line1, line2):
