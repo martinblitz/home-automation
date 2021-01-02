@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gismocaster-etc-pv-volume
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 10Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /gismocaster/etc
+    server: nfs-server
+

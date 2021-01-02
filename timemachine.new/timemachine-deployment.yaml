@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timemachine
+  labels:
+    app: timemachine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: timemachine
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: timemachine
+    spec:
+      hostNetwork: true
+      containers:
+      - image: mcblitz/timemachine
+        name: timemachine
+        env:
+        - name: SET_PERMISSIONS
+          value: "true"
+        - name: VOLUME_SIZE_LIMIT
+          value: "2700000"
+        ports:
+        - containerPort: 548
+        - containerPort: 636
+        resources: {}
+        volumeMounts:
+        - mountPath: /timemachine
+          name: timemachine-data
+        - name: secrets
+          mountPath: "/etc/timemachine/secrets"
+          readOnly: true
+      restartPolicy: Always
+      volumes:
+      - name: timemachine-data
+        persistentVolumeClaim:
+          claimName: timemachine-pv-claim
+      - name: secrets
+        secret:
+          secretName: timemachine-secrets
+      nodeSelector:
+        timemachine: mounted

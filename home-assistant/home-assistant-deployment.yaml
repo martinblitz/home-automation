@@ -24,7 +24,9 @@ spec:
           value: Europe/London
         - name: variable
           value: TZ
-        image: mcblitz/home-assistant:0.111.4
+        image: mcblitz/home-assistant:2020.12.1
+        #image: mcblitz/home-assistant:0.117.5
+        #image: mcblitz/home-assistant:0.116.4
         name: home-assistant
         ports:
           - name: api

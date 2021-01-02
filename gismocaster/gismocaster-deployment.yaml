@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gismocaster
+  name: gismocaster
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gismocaster
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: gismocaster
+    spec:
+      containers:
+      - args:
+        - ./run.sh
+        #- python3
+        #- web/manage.py
+        #- runserver
+        #- 0.0.0.0:8000
+        #- --noreload
+        image: mcblitz/gismocaster:latest
+        name: gismocaster
+        ports:
+          - name: gismocaster
+            containerPort: 8000
+        resources: {}
+        volumeMounts:
+        - mountPath: /usr/src/app/etc
+          name: gismocaster-etc-pv-claim
+        - mountPath: /usr/src/app/var
+          name: gismocaster-var-pv-claim
+        workingDir: /usr/src/app
+      restartPolicy: Always
+      volumes:
+      - name: gismocaster-etc-pv-claim
+        persistentVolumeClaim:
+          claimName: gismocaster-etc-pv-claim
+      - name: gismocaster-var-pv-claim
+        persistentVolumeClaim:
+          claimName: gismocaster-var-pv-claim
+

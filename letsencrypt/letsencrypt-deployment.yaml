@@ -27,7 +27,7 @@ spec:
         - name: TZ
           value: America/New_York
         - name: URL
-          value: blitzhome.dynamic-dns.net
+          value: blitzhome.hopto.org
         - name: VALIDATION
           value: http
         image: linuxserver/letsencrypt

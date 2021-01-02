@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mosquitto
+  name: mosquitto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - image: eclipse-mosquitto
+        name: mosquitto
+        ports:
+        - containerPort: 1883
+        - containerPort: 9001
+        volumeMounts:
+        - mountPath: /mosquitto
+          name: mosquitto-pv-claim
+      hostname: mosquitto
+      restartPolicy: Always
+      volumes:
+      - name: mosquitto-pv-claim
+        persistentVolumeClaim:
+          claimName: mosquitto-pv-claim

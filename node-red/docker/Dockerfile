@@ -1,4 +1,6 @@
-FROM raymondmm/node-red-homekit
+ARG DOCKER_VERSION
+
+FROM nrchkb/node-red-homekit:$DOCKER_VERSION
 LABEL mainteiner="Martin Blitz <martincblitz@gmail.com>"
 
 USER root

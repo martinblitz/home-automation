@@ -1,0 +1,9 @@
+#!/bin/bash
+
+read DOCKER_NAME < DOCKER_NAME
+read DOCKER_VERSION < DOCKER_VERSION
+
+echo building version ${DOCKER_NAME}:${DOCKER_VERSION}
+
+docker build . --build-arg DOCKER_VERSION=${DOCKER_VERSION} -t ${DOCKER_NAME}:${DOCKER_VERSION}
+
