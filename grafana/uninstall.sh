@@ -1,3 +1,3 @@
-helm delete --purge grafana
+arkade uninstall grafana
 kubectl delete -f grafana-pv-claim.yaml
 kubectl delete -f grafana-pv-volume.yaml
