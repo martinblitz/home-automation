@@ -1,6 +1,6 @@
 image:
   repository: grafana/grafana
-  tag: 6.3.6
+  tag: 7.4.5
 plugins: [ grafana-piechart-panel ]
 ingress:
   enabled: true

@@ -19,7 +19,7 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       containers:
-      - image: mcblitz/node-red:1.6.0-1.2.6
+      - image: mcblitz/node-red:1.8.0-1.2.9-10-arm64v8
         name: node-red-homekit
         resources: {}
         volumeMounts:

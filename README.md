@@ -61,7 +61,7 @@ Disable swap on each RPI:
 
 ## Create k3s Cluster
 
-On Laptop reate k8s master node
+On Laptop create k8s master node
 
 	k3sup install --ip 192.168.1.37 --user pi --k3s-version v1.18.9+k3s1 --k3s-extra-args "--disable servicelb"
 
@@ -138,7 +138,7 @@ From laptop, install metalb
 	
 ## Traefik dashboard
 
-traefik was istall when the cluster was created.  Now enable the dashboard
+traefik was install when the cluster was created.  Now enable the dashboard
 
 	https://levelup.gitconnected.com/a-guide-to-k3s-ingress-using-traefik-with-nodeport-6eb29add0b4b
 
@@ -146,7 +146,7 @@ Edit the traefik configMap
 
 	kubectl -n kube-system edit cm traefik
 	
-Add line 31 and 32 "[api] / dashboard = true" and sabe
+Add line 31 and 32 "[api] / dashboard = true" and save
 
 	# Please edit the object below. Lines beginning with a '#' will be ignored,
 	# and an empty file will abort the edit. If an error occurs while saving this file will be
