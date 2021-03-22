@@ -6,6 +6,9 @@ ingress:
   enabled: true
   hosts:
     - grafana
+service:
+  type: LoadBalancer
+  localBalancerIP: 192.168.1.246
 persistence:
   enabled: true
   existingClaim: grafana-pv-claim
