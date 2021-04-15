@@ -1,0 +1,57 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: blitzhome-ingress
+  annotations:
+    kubernetes.io/ingress.class: "public"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - blitzhome.hopto.org
+    - blitzhome.ddns.net
+    - home-assistant.blitzhome.ddns.net
+    - node-red.blitzhome.ddns.net
+    - grafana.blitzhome.ddns.net
+    secretName: blitzhome-certificate-secret
+  rules:
+  - host: blitzhome.hopto.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: home-assistant
+            port:
+              number: 80
+  - host: home-assistant.blitzhome.ddns.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: home-assistant
+            port:
+              number: 80
+  - host: node-red.blitzhome.ddns.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: node-red
+            port:
+              number: 80
+  - host: grafana.blitzhome.ddns.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: external-grafana
+            port:
+              number: 80

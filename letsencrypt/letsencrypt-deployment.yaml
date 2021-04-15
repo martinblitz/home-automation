@@ -19,7 +19,7 @@ spec:
       containers:
       - env:
         - name: EMAIL
-          value: mcblitz@verizon.net
+          value: martincblitz@gmail.com
         - name: PGID
           value: "1000"
         - name: PUID

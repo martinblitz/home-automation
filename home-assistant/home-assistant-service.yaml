@@ -4,9 +4,16 @@ metadata:
   name: home-assistant
   annotations:
     metallb.universe.tf/address-pool: default
-    metallb.universe.tf/allow-shared-ip: home-assistant
+    #metallb.universe.tf/allow-shared-ip: home-assistant
 spec:
   ports:
+  - name: host-assistant-8000
+    port: 8000
+    targetPort: 8000
+  - name: home-assistant-80
+    port: 80
+    targetPort: 8123
+    protocol: TCP
   - name: home-assistant-443
     port: 443
     targetPort: 8123

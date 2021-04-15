@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: chronograf
@@ -8,7 +8,10 @@ spec:
   - host: chronograf
     http:
       paths:
-      - path: /
+      - path: "/"
+        pathType: Exact
         backend:
-          serviceName: chronograf
-          servicePort: 8888
+          service
+            name: chronograf
+            port:
+              number: 8888

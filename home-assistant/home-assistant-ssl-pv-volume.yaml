@@ -16,5 +16,5 @@ spec:
     - hard
     - nfsvers=4.1
   nfs:
-    path: /letsencrypt/etc/letsencrypt
+    path: /swag/etc/letsencrypt
     server: nfs-server

@@ -1,0 +1,28 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: blitzhome-certificate
+spec:
+  secretName: blitzhome-certificate-secret
+  issuerRef:
+    name: issuer-letsencrypt
+  commonName: blitzhome.hopto.org
+  dnsName:
+  - blitzhome.hopto.org
+  - blitzhome.ddns.net
+  - home-assistant.blitzhome.ddns.net
+  - node-red.blitzhome.ddns.net
+  - grafana.blitzhome.ddns.net
+  - dashboard.blitzhome.ddns.net
+  acme:
+    config:
+    - http01:
+        ingressClass: nginx
+      domains:
+      - blitzhome.hopto.org
+      - blitzhome.ddns.net
+      - home-assistant.blitzhome.ddns.net
+      - node-red.blitzhome.ddns.net
+      - grafana.blitzhome.ddns.net
+      - dashboard.blitzhome.ddns.net
+

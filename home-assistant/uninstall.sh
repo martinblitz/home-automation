@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#kubectl delete -f home-assistant-ingress.yaml
 kubectl delete -f home-assistant-service.yaml
 kubectl delete -f home-assistant-deployment.yaml
 kubectl delete -f home-assistant-ssl-pv-claim.yaml

@@ -51,7 +51,7 @@ spec:
         image: 'causticlab/hass-configurator-docker:arm'
         ports:
           - name: configurator
-            hostPort: 3218
+            #hostPort: 3218
             containerPort: 3218
             protocol: TCP
         env:
