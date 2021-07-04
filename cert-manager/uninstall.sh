@@ -1,5 +1,7 @@
 #!/bin/bash
 
+kubectl delete -f blitzhome-ingress.yaml
+kubectl delete -f grafana-external-service.yaml
 kubectl delete -f blitzhome-certificate.yaml
 kubectl delete -f prod_issuer.yaml
 helm uninstall cert-manager --namespace cert-manager

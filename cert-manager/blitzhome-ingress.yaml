@@ -13,6 +13,7 @@ spec:
     - home-assistant.blitzhome.ddns.net
     - node-red.blitzhome.ddns.net
     - grafana.blitzhome.ddns.net
+    - dashboard.blitzhome.ddns.net
     secretName: blitzhome-certificate-secret
   rules:
   - host: blitzhome.hopto.org
@@ -55,3 +56,13 @@ spec:
             name: external-grafana
             port:
               number: 80
+  - host: dashboard.blitzhome.ddns.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: external-kubernetes-dashboard
+            port:
+              number: 443
