@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: default-backend
+spec:
+  ports:
+  - port: 80
+    targetPort: 5678
+  selector:
+    app: default-backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: default-backend
+spec:
+  selector:
+    matchLabels:
+      app: default-backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: default-backend
+    spec:
+      containers:
+      - name: default-backend
+        image: tvon/http-echo
+        args:
+        - "-text=default-backend"
+        ports:
+        - containerPort: 5678

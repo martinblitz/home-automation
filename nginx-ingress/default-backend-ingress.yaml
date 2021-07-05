@@ -1,0 +1,13 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: default-backend
+  annotations:
+    kubernetes.io/ingress.class: "public"
+spec:
+  defaultBackend:
+    service:
+      name: default-backend
+      port:
+        number: 80
+
