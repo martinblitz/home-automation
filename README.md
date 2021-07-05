@@ -166,7 +166,7 @@ If the node you are adding is not reachable through the default interface you ca
 	 sudo microk8s join 192.168.1.37:25000/2866392874eef44bd842659e4b97f58e
 	 sudo mic	microk8s join 10.1.235.192:25000/2866392874eef44bd842659e4b97f58e=
 
-On the nodes, issue the following commnad, using the key from the master:
+On the nodes, issue the following command, using the key from the master:
 
 	ubuntu@ubuntu:~$ sudo microk8s join 192.168.1.37:25000/2866392874eef44bd842659e4b97f58e
 	Contacting cluster at 192.168.1.37
@@ -397,6 +397,22 @@ Add a DNS entry to the router pointing "chronograf" to the traefik address.  For
 chronograf can now be accessed as
 
 	http://chronograf:8888
+
+## Mosquitto
+
+Install mosquitto
+
+	cd mosquitto
+	./install.sh
+	cd ..
+	
+## Home-assistant
+
+Install home-assistant
+
+	cd home-assistant
+	./install
+	cd ..
 
 ## Node-red
 
