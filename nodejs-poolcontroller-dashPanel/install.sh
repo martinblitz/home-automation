@@ -1,5 +1,5 @@
-kubectl apply -f nodejs-poolcontroller-dashPanel-pv-volume.yaml
-kubectl apply -f nodejs-poolcontroller-dashPanel-pv-claim.yaml
-kubectl apply -f nodejs-poolcontroller-dashPanel-deployment.yaml
-kubectl apply -f nodejs-poolcontroller-dashPanel-service.yaml
+kubectl apply -f poolcontroller-dashpanel-pv-volume.yaml
+kubectl apply -f poolcontroller-dashpanel-pv-claim.yaml
+kubectl apply -f poolcontroller-dashpanel-deployment.yaml
+kubectl apply -f poolcontroller-dashpanel-service.yaml
 

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nodejs-poolcontroller-dashPanel-pv-claim
+  name: poolcontroller-dashpanel-pv-claim
   labels:
-    io.kompose.service: nodejs-poolcontroller-dashPanel-pv-claim
+    io.kompose.service: poolcontroller-dashpanel-pv-claim
 spec:
   storageClassName: manual
   accessModes:

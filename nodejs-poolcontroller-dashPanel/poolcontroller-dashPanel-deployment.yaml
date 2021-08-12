@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: poolcontroller-dashpanel 
+  name: poolcontroller-dashpanel 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: poolcontroller-dashpanel 
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: poolcontroller-dashpanel 
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - image: msmi/nodejs-poolcontroller-dashpanel
+        name: poolcontroller-dashpanel 
+        resources: {}
+        volumeMounts:
+        - mountPath: /data
+          name: poolcontroller-dashpanel-pv-claim
+        ports:
+          - name: pctrlr-dp-5150 
+            containerPort: 5150
+            protocol: TCP
+      restartPolicy: Always
+      volumes:
+      - name: poolcontroller-dashpanel-pv-claim
+        persistentVolumeClaim:
+          claimName: poolcontroller-dashpanel-pv-claim
