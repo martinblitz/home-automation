@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nodejs-poolcontroller-dashPanel
+  name: nodejs-poolcontroller-dashPanel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs-poolcontroller-dashPanel
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nodejs-poolcontroller-dashPanel
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - image: mcblitz/nodejs-poolcontroller-dashPanel
+        name: nodejs-poolcontroller-dashPanel
+        resources: {}
+        volumeMounts:
+        - mountPath: /data
+          name: nodejs-poolcontroller-dashPanel-pv-claim
+        ports:
+          - name: nodejs-poolcontroller-dashPanel
+            containerPort: 5150
+            protocol: TCP
+      restartPolicy: Always
+      volumes:
+      - name: nodejs-poolcontroller-dashPanel-pv-claim
+        persistentVolumeClaim:
+          claimName: nodejs-poolcontroller-dashPanel-pv-claim
