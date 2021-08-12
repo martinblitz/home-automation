@@ -49,7 +49,7 @@ spec:
         securityContext:
           runAsUser: 0
       - name: configurator
-        image: 'causticlab/hass-configurator-docker:arm'
+        image: causticlab/hass-configurator-docker:0.4.1
         ports:
           - name: configurator
             #hostPort: 3218
@@ -64,10 +64,10 @@ spec:
             value: 'true'
         resources: {}
         volumeMounts:
-          - name: home-assistant-config-pv-claim
-            mountPath: /config
-          - mountPath: /config/letsencrypt
-            name: home-assistant-ssl-pv-claim
+        - name: home-assistant-config-pv-claim
+          mountPath: /config
+        - mountPath: /config/letsencrypt
+          name: home-assistant-ssl-pv-claim
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsUser: 0
