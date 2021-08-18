@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: poolcontroller 
+  name: poolcontroller 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: poolcontroller 
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: poolcontroller 
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - image: mcblitz/nodejs-poolcontroller
+        name: poolcontroller 
+        resources: {}
+        volumeMounts:
+        #- mountPath: /home/app/config
+        #  name: poolcontroller-config-pv-claim
+        - mountPath: /home/app/data
+          name: poolcontroller-data-pv-claim
+        - mountPath: /home/app/logs
+          name: poolcontroller-logs-pv-claim
+        ports:
+          - name: pctrlr-4200 
+            containerPort: 4200
+            protocol: TCP
+      restartPolicy: Always
+      volumes:
+      #- name: poolcontroller-config-pv-claim
+      #  persistentVolumeClaim:
+      #    claimName: poolcontroller-config-pv-claim
+      - name: poolcontroller-data-pv-claim
+        persistentVolumeClaim:
+          claimName: poolcontroller-data-pv-claim
+      - name: poolcontroller-logs-pv-claim
+        persistentVolumeClaim:
+          claimName: poolcontroller-logs-pv-claim
+
