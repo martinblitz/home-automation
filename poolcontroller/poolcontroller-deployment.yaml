@@ -23,8 +23,6 @@ spec:
         name: poolcontroller 
         resources: {}
         volumeMounts:
-        #- mountPath: /home/app/config
-        #  name: poolcontroller-config-pv-claim
         - mountPath: /home/app/data
           name: poolcontroller-data-pv-claim
         - mountPath: /home/app/logs
@@ -35,9 +33,6 @@ spec:
             protocol: TCP
       restartPolicy: Always
       volumes:
-      #- name: poolcontroller-config-pv-claim
-      #  persistentVolumeClaim:
-      #    claimName: poolcontroller-config-pv-claim
       - name: poolcontroller-data-pv-claim
         persistentVolumeClaim:
           claimName: poolcontroller-data-pv-claim
