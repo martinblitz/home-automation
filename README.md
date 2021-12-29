@@ -536,13 +536,13 @@ On the master server, enable helm
 	Helm is enabled
 
 
-On laptop, add stable respositories
+## On laptop, add stable respositories
 
 	MartinsWorkMBP:grafana martinblitz$ helm repo add grafana https://grafana.github.io/helm-charts
 	"grafana" has been added to your repositories
 
 
-Install grafana
+## Install grafana
 
 	cd grafana
 	./install.sh
@@ -553,3 +553,15 @@ Add a DNS entry to the router pointing "grafana" to the traefik address.  For ex
 grafana can now be accessed as
 
 	http://grafana
+
+## Install poolcontroller and poolcontroller-panel
+
+	cd poolcontroller
+	./install.sh
+	cd ../poolcontroller-panel
+	./install
+	cd ..
+	
+The poolcontroller can be accessed via
+
+	http://192.168.1.245/
