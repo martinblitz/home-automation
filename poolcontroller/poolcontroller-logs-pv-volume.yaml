@@ -4,6 +4,7 @@ metadata:
   name: poolcontroller-logs-pv-volume
   labels:
     type: local
+    disk: poolcontroller-logs
 spec:
   capacity:
     storage: 5Gi

@@ -11,4 +11,6 @@ spec:
   resources:
     requests:
       storage: 5Gi
-
+  selector:
+    matchLabels:
+      disk: poolcontroller-logs
