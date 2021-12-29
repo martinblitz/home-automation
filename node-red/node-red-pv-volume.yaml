@@ -4,6 +4,7 @@ metadata:
   name: node-red-pv-volume
   labels:
     type: local
+    disk: node-red-data
 spec:
   capacity:
     storage: 5Gi
