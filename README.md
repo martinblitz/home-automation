@@ -61,6 +61,10 @@ Update and upgrade the server
 	.
 	.
 
+Install additional drivers
+
+    ubuntu@ubuntu:~$ sudo apt install linux-modules-extra-raspi -y
+ 
 Disable swap
 
 	ubuntu@ubuntu:~$ sudo swapoff -a
@@ -69,7 +73,9 @@ Change the host name
 
 	ubuntu@ubuntu:~$ sudo hostnamectl set-hostname k8s-node-1
 	
-Edit /boot/firmware/cmdline.txt and add "cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1" to the beginning
+Edit /boot/firmware/cmdline.txt and add the following text to the end of the line
+
+    cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1
 
 Create ssh keys and exchange between servers
 
@@ -136,22 +142,13 @@ Instructions can be found here:
 
 Issue the command on each node:
 
-	sudo snap install microk8s --classic
+	sudo snap install microk8s  --channel=1.23/stable --classic
 
 On the master, issue the following command:
 
-	ubuntu@k8s-master:~$ sudo snap install microk8s --classic
+	ubuntu@k8s-master:~$ sudo snap install microk8s  --channel=1.23/stable --classic
 	NAME         STATUS   ROLES    AGE     VERSION
 	k8s-master   Ready    <none>   7m14s   v1.20.2-34+c6851e88267786
-
-Remote taint from master so we can run pod on the node
-
-	kubectl taint nodes --all node-role.kubernetes.io/master-
-
-Enable microk8s features
-
-	microk8s enable dashboard helm3 metallb rbac dns
-	microk8s enable ingress
 
 Tell the master you wait to add a node
 
@@ -161,7 +158,7 @@ From the node you wish to join to this cluster, run the following:
 
 	sudo microk8s join 192.168.1.37:25000/2866392874eef44bd842659e4b97f58e
 	
-If the node you are adding is not reachable through the default interface you can use one of the following:
+    If the node you are adding is not reachable through the default interface you can use one of the following:
 
 	 sudo microk8s join 192.168.1.37:25000/2866392874eef44bd842659e4b97f58e
 	 sudo mic	microk8s join 10.1.235.192:25000/2866392874eef44bd842659e4b97f58e=
@@ -172,11 +169,18 @@ On the nodes, issue the following command, using the key from the master:
 	Contacting cluster at 192.168.1.37
 	Waiting for this node to finish joining the cluster. ..  
 
+Add ubuntu user to microk8s group on each node and reboot
+
+    sudo usermod -a -G microk8s ubuntu
+    sudo chown -f -R ubuntu ~/.kube
+    sudo reboot
+
 On the master, verify the nodes:
 
-	NAME         STATUS     ROLES    AGE   VERSION
-	k8s-master   Ready      <none>   24m   v1.20.2-34+c6851e88267786
-	k8s-node-1   NotReady   <none>   15m   v1.20.2-34+c6851e88267786
+	ubuntu@k8s-master:~$ microk8s kubectl get nodes
+	NAME         STATUS   ROLES    AGE   VERSION
+	k8s-master   Ready    <none>   20m   v1.23.0-2+76dcb121da5f9e
+	k8s-node-1   Ready    <none>   19s   v1.23.0-2+76dcb121da5f9e
 
 Get the kubeconfig file and copy to you laptop
 
@@ -186,14 +190,22 @@ On the k8s master
 
 On the laptop
 
-	MartinsWorkMBP:traefik martinblitz$ scp ubuntu@k8s-master:kubeconfig $HOME
-	kubeconfig                                                                                                                                                                                                                                    	100% 1845     1.6MB/s   00:00    
+	MartinsWorkMBP:traefik martinblitz$ scp ubuntu@k8s-master:kubeconfig $HOME/kubeconfig                                                                                                                                                                                                                                    	100% 1845     1.6MB/s   00:00    
 
 Export the kubeconfig on you laptop
 
 	MartinsWorkMBP:~ martinblitz$ export KUBECONFIG=$HOME/kubeconfig
 
 Add the export to you ~/.bash_profile file
+
+Remote taint from master so we can run pod on the node
+
+	kubectl taint nodes --all node-role.kubernetes.io/master-
+
+Enable microk8s features
+
+	microk8s enable dashboard helm3 metallb rbac dns
+	microk8s enable ingress
 
 ## Enable k8s dashboard
 
@@ -202,9 +214,9 @@ Instruction can be found here:
 > https://microk8s.io/docs/addon-dashboard
 > https://virtualizationreview.com/articles/2019/01/30/microk8s-part-2-how-to-monitor-and-manage-kubernetes.aspx
 
-Enable the dashboard
+Enable the dashboard and rbac
 
-	microk8s.enable dns dashboard ingress
+	microk8s enable dashboard rbac
 
 Set timeout to 0.
 
@@ -279,6 +291,52 @@ Access the dashboard on you laptop
 > http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#/login
 
 
+## Enable metallb
+
+Use the range 192.168.1.237-192.168.1.254
+
+	ubuntu@k8s-master:~$ microk8s enable metallb
+	Enabling MetalLB
+	Enter each IP address range delimited by comma (e.g. '10.64.140.43-10.64.140.49,192.168.0.105-192.168.0.111'): 192.168.1.237-192.168.1.254
+	Applying Metallb manifest
+	namespace/metallb-system created
+	secret/memberlist created
+	Warning: policy/v1beta1 PodSecurityPolicy is deprecated in v1.21+, unavailable in v1.25+
+	podsecuritypolicy.policy/controller created
+	podsecuritypolicy.policy/speaker created
+	serviceaccount/controller created
+	serviceaccount/speaker created
+	clusterrole.rbac.authorization.k8s.io/metallb-system:controller created
+	clusterrole.rbac.authorization.k8s.io/metallb-system:speaker created
+	role.rbac.authorization.k8s.io/config-watcher created
+	role.rbac.authorization.k8s.io/pod-lister created
+	clusterrolebinding.rbac.authorization.k8s.io/metallb-system:controller created
+	clusterrolebinding.rbac.authorization.k8s.io/metallb-system:speaker created
+	rolebinding.rbac.authorization.k8s.io/config-watcher created
+	rolebinding.rbac.authorization.k8s.io/pod-lister created
+	Warning: spec.template.spec.nodeSelector[beta.kubernetes.io/os]: deprecated since v1.14; use "kubernetes.io/os" instead
+	daemonset.apps/speaker created
+	deployment.apps/controller created
+	configmap/config created
+	MetalLB is enabled
+
+## Enable ingress service
+
+	ubuntu@k8s-master:~$ microk8s enable ingress
+	Enabling Ingress
+	ingressclass.networking.k8s.io/public created
+	namespace/ingress created
+	serviceaccount/nginx-ingress-microk8s-serviceaccount created
+	clusterrole.rbac.authorization.k8s.io/nginx-ingress-microk8s-clusterrole created
+	role.rbac.authorization.k8s.io/nginx-ingress-microk8s-role created
+	clusterrolebinding.rbac.authorization.k8s.io/nginx-ingress-microk8s created
+	rolebinding.rbac.authorization.k8s.io/nginx-ingress-microk8s created
+	configmap/nginx-load-balancer-microk8s-conf created
+	configmap/nginx-ingress-tcp-microk8s-conf created
+	configmap/nginx-ingress-udp-microk8s-conf created
+	daemonset.apps/nginx-ingress-microk8s-controller created
+	Ingress is enabled
+
 ## Port forward to nginx-ingress
 
 Add a load-balancer server for the nginx-ingress.
@@ -304,7 +362,7 @@ on the laptop, install the cert-manager and create certs for:
 
 ## NFS Server
 
-On k8s-node-1, install nfs-common
+Install nfs-common on all nodes
 
 	ubuntu@k8s-node-1:~/source/home-automation/TICK$ sudo apt install nfs-common
 	Reading package lists... Done
@@ -383,6 +441,26 @@ Install NFS server
 	cd nfs-server
 	./install.sh
 	cd ..
+
+## Enable microk8s dns service
+
+	ubuntu@k8s-master:~$ microk8s enable dns
+	Enabling DNS
+	Applying manifest
+	serviceaccount/coredns created
+	configmap/coredns created
+	deployment.apps/coredns created
+	service/kube-dns created
+	clusterrole.rbac.authorization.k8s.io/coredns created
+	clusterrolebinding.rbac.authorization.k8s.io/coredns created
+	Restarting kubelet
+	Adding argument --cluster-domain to nodes.
+	Configuring node 192.168.1.36
+	Adding argument --cluster-dns to nodes.
+	Configuring node 192.168.1.36
+	Restarting nodes.
+	Configuring node 192.168.1.36
+	DNS is enabled
 
 ## TICK
 
