@@ -11,4 +11,7 @@ spec:
   resources:
     requests:
       storage: 1Mi
+  selector:
+    matchLabels:
+      disk: letsencrypt-data
 

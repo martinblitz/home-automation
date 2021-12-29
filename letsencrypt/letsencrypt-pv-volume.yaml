@@ -4,6 +4,7 @@ metadata:
   name: letsencrypt-pv-volume
   labels:
     type: local
+    disk: letsencrypt-data
 spec:
   capacity:
     storage: 1Mi
