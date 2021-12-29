@@ -4,6 +4,7 @@ metadata:
   name: nfs-server-alpine-pv-volume
   labels:
     type: local
+    disk: nfs-server-alpine
 spec:
   storageClassName: manual
   capacity:

@@ -11,3 +11,7 @@ spec:
   resources:
     requests:
       storage: 1Ti
+  selector:
+    matchLabels:
+      disk: nfs-server-alpine
+
