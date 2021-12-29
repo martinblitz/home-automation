@@ -4,6 +4,7 @@ metadata:
   name: home-assistant-config-pv-volume
   labels:
     type: local
+    disk: home-assistant-config
 spec:
   capacity:
     storage: 10Gi

@@ -11,3 +11,7 @@ spec:
   resources:
     requests:
       storage: 1Mi
+  selector:
+    matchLabels:
+      disk: home-assistant-ssl
+

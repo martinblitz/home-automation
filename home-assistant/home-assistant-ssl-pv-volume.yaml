@@ -4,6 +4,7 @@ metadata:
   name: home-assistant-ssl-pv-volume
   labels:
     type: local
+    disk: home-assistant-ssl
 spec:
   capacity:
     storage: 1Mi

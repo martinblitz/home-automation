@@ -24,7 +24,9 @@ spec:
           value: Europe/London
         - name: variable
           value: TZ
-        image: mcblitz/home-assistant:2021.6.6
+        image: mcblitz/home-assistant:2021.12
+        #image: mcblitz/home-assistant:2021.9.7
+        #image: mcblitz/home-assistant:2021.6.6
         #image: mcblitz/home-assistant:2021.2.1
         #image: mcblitz/home-assistant:2020.12.1
         #image: mcblitz/home-assistant:0.117.5

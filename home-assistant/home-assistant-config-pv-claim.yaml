@@ -11,3 +11,7 @@ spec:
   resources:
     requests:
       storage: 10Gi
+  selector:
+    matchLabels:
+      disk: home-assistant-config
+
