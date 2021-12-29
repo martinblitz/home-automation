@@ -5,6 +5,7 @@ metadata:
   namespace: kube-system
   labels:
     type: local
+    disk: etc-backup-data
 spec:
   capacity:
     storage: 5Gi
