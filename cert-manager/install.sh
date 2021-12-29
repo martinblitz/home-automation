@@ -2,8 +2,9 @@
 
 kubectl create namespace cert-manager
 kubectl label namespace cert-manager certmanager.k8s.io/disable-validation="true"
-kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.6/deploy/manifests/00-crds.yaml
-helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.4.0 --create-namespace --set installCRDs=true
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
 echo sleep 60 seconds
 sleep 60
 kubectl apply -f prod_issuer.yaml 
