@@ -11,7 +11,7 @@ spec:
       - path: "/"
         pathType: Exact
         backend:
-          service
+          service:
             name: chronograf
             port:
               number: 8888

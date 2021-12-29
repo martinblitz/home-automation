@@ -6,6 +6,7 @@ metadata:
   labels:
     type: local
     io.kompose.service: chronograf-pv-claim
+    disk: chronograf-data
 spec:
   storageClassName: manual
   capacity:

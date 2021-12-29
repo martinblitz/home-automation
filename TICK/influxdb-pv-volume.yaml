@@ -6,6 +6,7 @@ metadata:
   labels:
     type: local
     io.kompose.service: influxdb-pv-claim
+    disk: influxdb-data
 spec:
   storageClassName: manual
   capacity:
