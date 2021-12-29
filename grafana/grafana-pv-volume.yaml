@@ -5,6 +5,7 @@ metadata:
   namespace: grafana
   labels:
     type: local
+    disk: grafana-data
 spec:
   capacity:
     storage: 10Gi
