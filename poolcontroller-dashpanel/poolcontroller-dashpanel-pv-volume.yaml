@@ -4,6 +4,7 @@ metadata:
   name: poolcontroller-dashpanel-pv-volume
   labels:
     type: local
+    disk: poolcontroller-dashpanel-data
 spec:
   capacity:
     storage: 5Gi
