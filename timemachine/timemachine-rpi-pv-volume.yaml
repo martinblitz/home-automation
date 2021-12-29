@@ -4,6 +4,7 @@ metadata:
   name: timemachine-rpi-pv-volume
   labels:
     type: local
+    disk: timemachine-rpi-data
 spec:
   storageClassName: manual
   capacity:

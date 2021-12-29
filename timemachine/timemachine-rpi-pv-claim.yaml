@@ -11,4 +11,7 @@ spec:
   resources:
     requests:
       storage: 3Ti
+  selector:
+    matchLabels:
+      disk: timemachine-rpi-data
 
