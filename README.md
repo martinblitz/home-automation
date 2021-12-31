@@ -144,11 +144,17 @@ Issue the command on each node:
 
 	sudo snap install microk8s  --channel=1.23/stable --classic
 
-On the master, issue the following command:
+On the each mode, issue the following command:
 
 	ubuntu@k8s-master:~$ sudo snap install microk8s  --channel=1.23/stable --classic
 	NAME         STATUS   ROLES    AGE     VERSION
 	k8s-master   Ready    <none>   7m14s   v1.20.2-34+c6851e88267786
+
+Add ubuntu user to microk8s group on each node and reboot
+
+    sudo usermod -a -G microk8s ubuntu
+    sudo chown -f -R ubuntu ~/.kube
+    sudo reboot
 
 Tell the master you wait to add a node
 
@@ -168,12 +174,6 @@ On the nodes, issue the following command, using the key from the master:
 	ubuntu@ubuntu:~$ sudo microk8s join 192.168.1.37:25000/2866392874eef44bd842659e4b97f58e
 	Contacting cluster at 192.168.1.37
 	Waiting for this node to finish joining the cluster. ..  
-
-Add ubuntu user to microk8s group on each node and reboot
-
-    sudo usermod -a -G microk8s ubuntu
-    sudo chown -f -R ubuntu ~/.kube
-    sudo reboot
 
 On the master, verify the nodes:
 
@@ -436,7 +436,7 @@ On. laptop, label node "k8s-node-1" to force nfs server to run on that node.
 
 	kubectl label node k8s-node-1 home-automation=mounted
 
-Install NFS server
+## Install NFS server
 
 	cd nfs-server
 	./install.sh
