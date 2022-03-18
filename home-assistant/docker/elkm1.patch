@@ -1,24 +1,24 @@
 diff --git a/homeassistant/components/elkm1/__init__.py b/homeassistant/components/elkm1/__init__.py
-index 946e40b7e2..3be2263bcd 100644
+index 6791c2ec1b..11c8dbf82e 100644
 --- a/homeassistant/components/elkm1/__init__.py
 +++ b/homeassistant/components/elkm1/__init__.py
-@@ -15,6 +15,7 @@ from homeassistant.const import (
+@@ -20,6 +20,7 @@ from homeassistant.const import (
+     CONF_INCLUDE,
      CONF_PASSWORD,
+     CONF_PREFIX,
++    CONF_CODE,
      CONF_TEMPERATURE_UNIT,
      CONF_USERNAME,
-+    CONF_CODE,
      TEMP_CELSIUS,
-     TEMP_FAHRENHEIT,
- )
-@@ -122,6 +123,7 @@ DEVICE_SCHEMA = vol.Schema(
-         vol.Optional(CONF_PREFIX, default=""): vol.All(cv.string, vol.Lower),
-         vol.Optional(CONF_USERNAME, default=""): cv.string,
-         vol.Optional(CONF_PASSWORD, default=""): cv.string,
-+        vol.Optional(CONF_CODE, default=""): cv.string,
-         vol.Optional(CONF_AUTO_CONFIGURE, default=False): cv.boolean,
-         # cv.temperature_unit will mutate 'C' -> '°C' and 'F' -> '°F'
-         vol.Optional(
-@@ -203,6 +205,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+@@ -147,6 +148,7 @@ DEVICE_SCHEMA = vol.All(
+             vol.Optional(CONF_PREFIX, default=""): vol.All(cv.string, vol.Lower),
+             vol.Optional(CONF_USERNAME, default=""): cv.string,
+             vol.Optional(CONF_PASSWORD, default=""): cv.string,
++            vol.Optional(CONF_CODE, default=""): cv.string,
+             vol.Optional(CONF_AUTO_CONFIGURE, default=False): cv.boolean,
+             vol.Optional(CONF_TEMPERATURE_UNIT, default="F"): cv.temperature_unit,
+             vol.Optional(CONF_AREA, default={}): DEVICE_SCHEMA_SUBDOMAIN,
+@@ -241,6 +243,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
      if not conf[CONF_AUTO_CONFIGURE]:
          # With elkm1-lib==0.7.16 and later auto configure is available
          config["panel"] = {"enabled": True, "included": [True]}
@@ -26,19 +26,19 @@ index 946e40b7e2..3be2263bcd 100644
          for item, max_ in ELK_ELEMENTS.items():
              config[item] = {
                  "enabled": conf[item][CONF_ENABLED],
-@@ -355,6 +358,7 @@ class ElkEntity(Entity):
-         self._element = element
+@@ -442,6 +445,7 @@ class ElkEntity(Entity):
          self._prefix = elk_data["prefix"]
+         self._name_prefix = f"{self._prefix} " if self._prefix else ""
          self._temperature_unit = elk_data["config"]["temperature_unit"]
 +        self._code = elk_data["config"]["code"]
          # unique_id starts with elkm1_ iff there is no prefix
          # it starts with elkm1m_{prefix} iff there is a prefix
          # this is to avoid a conflict between
 diff --git a/homeassistant/components/elkm1/alarm_control_panel.py b/homeassistant/components/elkm1/alarm_control_panel.py
-index 1c299e6880..e1809aaad1 100644
+index e9b1c5a3cc..ac7d0f729c 100644
 --- a/homeassistant/components/elkm1/alarm_control_panel.py
 +++ b/homeassistant/components/elkm1/alarm_control_panel.py
-@@ -201,6 +201,8 @@ class ElkArea(ElkAttachedEntity, AlarmControlPanelEntity, RestoreEntity):
+@@ -192,6 +192,8 @@ class ElkArea(ElkAttachedEntity, AlarmControlPanelEntity, RestoreEntity):
          attrs[ATTR_CHANGED_BY_KEYPAD] = self._changed_by_keypad
          attrs[ATTR_CHANGED_BY_TIME] = self._changed_by_time
          attrs[ATTR_CHANGED_BY_ID] = self._changed_by_id
@@ -47,7 +47,7 @@ index 1c299e6880..e1809aaad1 100644
          return attrs
  
      @property
-@@ -242,26 +244,38 @@ class ElkArea(ElkAttachedEntity, AlarmControlPanelEntity, RestoreEntity):
+@@ -233,26 +235,38 @@ class ElkArea(ElkAttachedEntity, AlarmControlPanelEntity, RestoreEntity):
  
      async def async_alarm_arm_home(self, code=None):
          """Send arm home command."""
