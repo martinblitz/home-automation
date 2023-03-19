@@ -19,12 +19,15 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       containers:
-      - image: mcblitz/nodejs-poolcontroller-dashpanel
+      - image: mcblitz/nodejs-poolcontroller-dashpanel:v7.6.1
+      #- image: msmi/nodejs-poolcontroller-dashpanel
         name: poolcontroller-dashpanel 
         resources: {}
         volumeMounts:
         - mountPath: /app/config
           name: poolcontroller-dashpanel-pv-claim
+        - name: tz-new-york
+          mountPath: /etc/localtime
         ports:
           - name: pctrlr-dp-5150 
             containerPort: 5150
@@ -34,3 +37,7 @@ spec:
       - name: poolcontroller-dashpanel-pv-claim
         persistentVolumeClaim:
           claimName: poolcontroller-dashpanel-pv-claim
+      - name: tz-new-york
+        hostPath:
+          path: /usr/share/zoneinfo/America/New_York
+

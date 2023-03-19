@@ -24,7 +24,9 @@ spec:
           value: Europe/London
         - name: variable
           value: TZ
-        image: mcblitz/home-assistant:2022.3
+        image: mcblitz/home-assistant:2023.3
+        #image: mcblitz/home-assistant:2022.11
+        #image: mcblitz/home-assistant:2022.4
         #image: mcblitz/home-assistant:2021.12
         #image: mcblitz/home-assistant:2021.9.7
         #image: mcblitz/home-assistant:2021.6.6
@@ -43,16 +45,24 @@ spec:
         resources: {}
         securityContext:
           privileged: true
+          runAsUser: 0
+          capabilities:
+            add:
+            - NET_ADMIN
+            - NET_RAW
+            - SYS_ADMIN
         volumeMounts:
         - mountPath: /config
           name: home-assistant-config-pv-claim
         - mountPath: /config/letsencrypt
           name: home-assistant-ssl-pv-claim
+        #imagePullPolicy: Always
         imagePullPolicy: IfNotPresent
-        securityContext:
-          runAsUser: 0
+        #securityContext:
+        #  runAsUser: 0
       - name: configurator
-        image: causticlab/hass-configurator-docker:0.4.1
+        image: causticlab/hass-configurator-docker:0.5.1
+        #image: causticlab/hass-configurator-docker:0.4.1
         ports:
           - name: configurator
             #hostPort: 3218

@@ -19,7 +19,9 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       containers:
-      - image: mcblitz/nodejs-poolcontroller
+      #- image: mcblitz/nodejs-poolcontroller
+      #- image: msmi/nodejs-poolcontroller
+      - image: mcblitz/nodejs-poolcontroller:v7.6.1
         name: poolcontroller 
         resources: {}
         volumeMounts:
@@ -27,6 +29,8 @@ spec:
           name: poolcontroller-data-pv-claim
         - mountPath: /home/app/logs
           name: poolcontroller-logs-pv-claim
+        - name: tz-new-york
+          mountPath: /etc/localtime
         ports:
           - name: pctrlr-4200 
             containerPort: 4200
@@ -39,4 +43,6 @@ spec:
       - name: poolcontroller-logs-pv-claim
         persistentVolumeClaim:
           claimName: poolcontroller-logs-pv-claim
-
+      - name: tz-new-york
+        hostPath:
+          path: /usr/share/zoneinfo/America/New_York

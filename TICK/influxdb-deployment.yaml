@@ -18,13 +18,13 @@ spec:
         app: influxdb
     spec:
       containers:
-      - image: influxdb:1.8.4
+      - image: influxdb:2.1.1
         name: influxdb
         ports:
         - containerPort: 8086
         resources: {}
         volumeMounts:
-        - mountPath: /var/lib/influxdb
+        - mountPath: /var/lib/influxdb2
           name: influxdb-claim
       restartPolicy: Always
       volumes:

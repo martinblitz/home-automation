@@ -14,6 +14,15 @@ spec:
       labels:
         role: nfs-server
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: home-automation
+                operator: In
+                values:
+                - mounted
       containers:
       - env:
         - name: SHARED_DIRECTORY
@@ -44,6 +53,13 @@ spec:
           - containerPort: 111
             protocol: UDP
       restartPolicy: Always
+      hostAliases:
+      - ip: "192.168.1.36"
+        hostnames:
+        - "microk8s-36"
+      - ip: "192.168.1.37"
+        hostnames:
+        - "microk8s-37"
       volumes:
       - name: nfs-server-alpine-pv-claim
         persistentVolumeClaim:

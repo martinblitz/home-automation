@@ -218,24 +218,7 @@ Enable the dashboard and rbac
 
 	microk8s enable dashboard rbac
 
-Set timeout to 0.
-
-> https://blinkeye.github.io/post/public/2019-05-30-kubernetes-dashboard/
-
-Edit the deployment
-
-	kubectl -n kube-system edit deployments kubernetes-dashboard
-	
-
-Add "--token-ttl=0" to the "args"
-
-	spec:
-	      containers:
-	      - args:
-	        - --auto-generate-certificates
-	        - --token-ttl=0     
-
-### Witout RBAC enabled 
+### Without RBAC enabled 
 
 Get the token for the dashboard
 
@@ -489,7 +472,7 @@ Install mosquitto
 Install home-assistant
 
 	cd home-assistant
-	./install
+	./install.sh
 	cd ..
 
 ## Node-red

@@ -3,8 +3,8 @@ kind: Ingress
 metadata:
   name: blitzhome-ingress
   annotations:
-    kubernetes.io/ingress.class: "public"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # kubernetes.io/ingress.class: "public"
+    cert-manager.io/cluster-issuer: lets-encrypt
 spec:
   tls:
   - hosts:
@@ -13,7 +13,7 @@ spec:
     - home-assistant.blitzhome.ddns.net
     - node-red.blitzhome.ddns.net
     - grafana.blitzhome.ddns.net
-    - dashboard.blitzhome.ddns.net
+    # - pool.blitzhome.dns.net
     secretName: blitzhome-certificate-secret
   rules:
   - host: blitzhome.hopto.org
@@ -56,13 +56,14 @@ spec:
             name: external-grafana
             port:
               number: 80
-  - host: dashboard.blitzhome.ddns.net
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: external-kubernetes-dashboard
-            port:
-              number: 443
+#  - host: pool.blitzhome.ddns.net
+#    http:
+#      paths:
+#      - path: /
+#        pathType: Prefix
+#        backend:
+#          service:
+#            name: poolcontroller-dashpanel
+#            port:
+#              number: 80
+
