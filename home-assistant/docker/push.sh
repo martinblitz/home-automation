@@ -5,6 +5,6 @@ read HA_VERSION < HOME_ASSISTANT_VERSION
 
 echo pushing ${HA_NAME}:${HA_VERSION}
 
-docker push ${HA_NAME}:${HA_VERSION}
-docker push ${HA_NAME}:latest
+sudo docker push ${HA_NAME}:${HA_VERSION}
+sudo docker push ${HA_NAME}:latest
 

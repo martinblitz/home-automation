@@ -1,5 +1,5 @@
 diff --git a/homeassistant/components/elkm1/__init__.py b/homeassistant/components/elkm1/__init__.py
-index b78157588e..17e77c4969 100644
+index 7b14c7e85e..d8e766c392 100644
 --- a/homeassistant/components/elkm1/__init__.py
 +++ b/homeassistant/components/elkm1/__init__.py
 @@ -22,6 +22,7 @@ from homeassistant.const import (
@@ -18,7 +18,7 @@ index b78157588e..17e77c4969 100644
              vol.Optional(CONF_AUTO_CONFIGURE, default=False): cv.boolean,
              vol.Optional(CONF_TEMPERATURE_UNIT, default="F"): cv.temperature_unit,
              vol.Optional(CONF_AREA, default={}): DEVICE_SCHEMA_SUBDOMAIN,
-@@ -255,6 +257,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+@@ -253,6 +255,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
      if not conf[CONF_AUTO_CONFIGURE]:
          # With elkm1-lib==0.7.16 and later auto configure is available
          config["panel"] = {"enabled": True, "included": [True]}
@@ -26,19 +26,19 @@ index b78157588e..17e77c4969 100644
          for item, max_ in ELK_ELEMENTS.items():
              config[item] = {
                  "enabled": conf[item][CONF_ENABLED],
-@@ -467,6 +470,7 @@ class ElkEntity(Entity):
-         self._mac = elk_data.mac
-         self._prefix = elk_data.prefix
-         self._temperature_unit: str = elk_data.config["temperature_unit"]
+@@ -458,6 +461,7 @@ class ElkEntity(Entity):
+         self._mac = elk_data["mac"]
+         self._prefix = elk_data["prefix"]
+         self._temperature_unit: str = elk_data["config"]["temperature_unit"]
 +        self._code = elk_data["config"]["code"]
          # unique_id starts with elkm1_ iff there is no prefix
          # it starts with elkm1m_{prefix} iff there is a prefix
          # this is to avoid a conflict between
 diff --git a/homeassistant/components/elkm1/alarm_control_panel.py b/homeassistant/components/elkm1/alarm_control_panel.py
-index bfac466cae..e293174572 100644
+index 3f5163a849..fa5f24af2e 100644
 --- a/homeassistant/components/elkm1/alarm_control_panel.py
 +++ b/homeassistant/components/elkm1/alarm_control_panel.py
-@@ -198,6 +198,8 @@ class ElkArea(ElkAttachedEntity, AlarmControlPanelEntity, RestoreEntity):
+@@ -196,6 +196,8 @@ class ElkArea(ElkAttachedEntity, AlarmControlPanelEntity, RestoreEntity):
          attrs[ATTR_CHANGED_BY_KEYPAD] = self._changed_by_keypad
          attrs[ATTR_CHANGED_BY_TIME] = self._changed_by_time
          attrs[ATTR_CHANGED_BY_ID] = self._changed_by_id
@@ -47,7 +47,7 @@ index bfac466cae..e293174572 100644
          return attrs
  
      @property
-@@ -240,31 +242,43 @@ class ElkArea(ElkAttachedEntity, AlarmControlPanelEntity, RestoreEntity):
+@@ -238,31 +240,43 @@ class ElkArea(ElkAttachedEntity, AlarmControlPanelEntity, RestoreEntity):
  
      async def async_alarm_arm_home(self, code: str | None = None) -> None:
          """Send arm home command."""
