@@ -30,7 +30,7 @@ index b78157588e..17e77c4969 100644
          self._mac = elk_data.mac
          self._prefix = elk_data.prefix
          self._temperature_unit: str = elk_data.config["temperature_unit"]
-+        self._code = elk_data["config"]["code"]
++        self._code = elk_data.config["code"]
          # unique_id starts with elkm1_ iff there is no prefix
          # it starts with elkm1m_{prefix} iff there is a prefix
          # this is to avoid a conflict between
